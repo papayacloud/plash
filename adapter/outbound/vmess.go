@@ -327,7 +327,7 @@ func NewVmess(option VmessOption) (*Vmess, error) {
 func parseVmessAddr(metadata *C.Metadata) *vmess.DstAddr {
 	var addrType byte
 	var addr []byte
-	switch metadata.AddrType {
+	switch metadata.AddrType() {
 	case C.AtypIPv4:
 		addrType = byte(vmess.AtypIPv4)
 		addr = make([]byte, net.IPv4len)
