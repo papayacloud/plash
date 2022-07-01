@@ -4,14 +4,12 @@ import (
 	"encoding/json"
 	"net"
 	"strconv"
+
+	"github.com/Dreamacro/clash/transport/socks5"
 )
 
 // Socks addr type
 const (
-	AtypIPv4       = 1
-	AtypDomainName = 3
-	AtypIPv6       = 4
-
 	TCP NetWork = iota
 	UDP
 
@@ -85,11 +83,11 @@ func (m *Metadata) SourceAddress() string {
 func (m *Metadata) AddrType() int {
 	switch true {
 	case m.DstIP == nil:
-		return AtypDomainName
+		return socks5.AtypDomainName
 	case m.DstIP.To4() != nil:
-		return AtypIPv4
+		return socks5.AtypIPv4
 	default:
-		return AtypIPv6
+		return socks5.AtypIPv6
 	}
 }
 
