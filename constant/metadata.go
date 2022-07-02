@@ -82,7 +82,7 @@ func (m *Metadata) SourceAddress() string {
 
 func (m *Metadata) AddrType() int {
 	switch true {
-	case m.DstIP == nil:
+	case m.Host != "" || m.DstIP == nil:
 		return socks5.AtypDomainName
 	case m.DstIP.To4() != nil:
 		return socks5.AtypIPv4
