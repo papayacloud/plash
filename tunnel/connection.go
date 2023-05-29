@@ -12,8 +12,6 @@ import (
 )
 
 func handleUDPToRemote(packet C.UDPPacket, pc C.PacketConn, metadata *C.Metadata) error {
-	defer packet.Drop()
-
 	addr := metadata.UDPAddr()
 	if addr == nil {
 		return errors.New("udp addr invalid")
@@ -41,16 +39,16 @@ func handleUDPToLocal(packet C.UDPPacket, pc net.PacketConn, key string, oAddr, 
 			return
 		}
 
-		fromUDPAddr := from.(*net.UDPAddr)
+		fromUDPAddr := *from.(*net.UDPAddr)
 		if fAddr.IsValid() {
 			fromAddr, _ := netip.AddrFromSlice(fromUDPAddr.IP)
-			fromAddr.Unmap()
+			fromAddr = fromAddr.Unmap()
 			if oAddr == fromAddr {
 				fromUDPAddr.IP = fAddr.AsSlice()
 			}
 		}
 
-		_, err = packet.WriteBack(buf[:n], fromUDPAddr)
+		_, err = packet.WriteBack(buf[:n], &fromUDPAddr)
 		if err != nil {
 			return
 		}

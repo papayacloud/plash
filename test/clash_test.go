@@ -15,16 +15,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Dreamacro/clash/adapter/outbound"
-	C "github.com/Dreamacro/clash/constant"
-	"github.com/Dreamacro/clash/hub/executor"
-	"github.com/Dreamacro/clash/transport/socks5"
-
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/Dreamacro/clash/adapter/outbound"
+	C "github.com/Dreamacro/clash/constant"
+	"github.com/Dreamacro/clash/hub/executor"
+	"github.com/Dreamacro/clash/transport/socks5"
 )
 
 const (
@@ -542,18 +542,16 @@ func testPacketConnTimeout(t *testing.T, pc net.PacketConn) error {
 
 func testSuit(t *testing.T, proxy C.ProxyAdapter) {
 	conn, err := proxy.DialContext(context.Background(), &C.Metadata{
-		Host:     localIP.String(),
-		DstPort:  "10001",
-		AddrType: socks5.AtypDomainName,
+		Host:    localIP.String(),
+		DstPort: "10001",
 	})
 	require.NoError(t, err)
 	defer conn.Close()
 	assert.NoError(t, testPingPongWithConn(t, conn))
 
 	conn, err = proxy.DialContext(context.Background(), &C.Metadata{
-		Host:     localIP.String(),
-		DstPort:  "10001",
-		AddrType: socks5.AtypDomainName,
+		Host:    localIP.String(),
+		DstPort: "10001",
 	})
 	require.NoError(t, err)
 	defer conn.Close()
@@ -564,10 +562,9 @@ func testSuit(t *testing.T, proxy C.ProxyAdapter) {
 	}
 
 	pc, err := proxy.ListenPacketContext(context.Background(), &C.Metadata{
-		NetWork:  C.UDP,
-		DstIP:    localIP,
-		DstPort:  "10001",
-		AddrType: socks5.AtypIPv4,
+		NetWork: C.UDP,
+		DstIP:   localIP,
+		DstPort: "10001",
 	})
 	require.NoError(t, err)
 	defer pc.Close()
@@ -575,10 +572,9 @@ func testSuit(t *testing.T, proxy C.ProxyAdapter) {
 	assert.NoError(t, testPingPongWithPacketConn(t, pc))
 
 	pc, err = proxy.ListenPacketContext(context.Background(), &C.Metadata{
-		NetWork:  C.UDP,
-		DstIP:    localIP,
-		DstPort:  "10001",
-		AddrType: socks5.AtypIPv4,
+		NetWork: C.UDP,
+		DstIP:   localIP,
+		DstPort: "10001",
 	})
 	require.NoError(t, err)
 	defer pc.Close()
@@ -586,10 +582,9 @@ func testSuit(t *testing.T, proxy C.ProxyAdapter) {
 	assert.NoError(t, testLargeDataWithPacketConn(t, pc))
 
 	pc, err = proxy.ListenPacketContext(context.Background(), &C.Metadata{
-		NetWork:  C.UDP,
-		DstIP:    localIP,
-		DstPort:  "10001",
-		AddrType: socks5.AtypIPv4,
+		NetWork: C.UDP,
+		DstIP:   localIP,
+		DstPort: "10001",
 	})
 	require.NoError(t, err)
 	defer pc.Close()
@@ -625,9 +620,8 @@ func benchmarkProxy(b *testing.B, proxy C.ProxyAdapter) {
 	}()
 
 	conn, err := proxy.DialContext(context.Background(), &C.Metadata{
-		Host:     localIP.String(),
-		DstPort:  "10001",
-		AddrType: socks5.AtypDomainName,
+		Host:    localIP.String(),
+		DstPort: "10001",
 	})
 	require.NoError(b, err)
 
@@ -660,7 +654,7 @@ log-level: silent
 	require.NoError(t, err)
 	defer cleanup()
 
-	require.True(t, TCPing(net.JoinHostPort(localIP.String(), "10000")))
+	require.True(t, TCPing(net.JoinHostPort("127.0.0.1", "10000")))
 	testPingPongWithSocksPort(t, 10000)
 }
 
